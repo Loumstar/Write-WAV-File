@@ -1,0 +1,14 @@
+#Remove all executables
+*
+!*.*
+!*/
+
+#Remove all hidden files
+.*
+
+#Except the Makefile and .gitignore
+!Makefile
+!.gitignore
+
+#Remove all object files
+*.o
