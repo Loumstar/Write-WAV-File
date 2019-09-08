@@ -27,15 +27,14 @@ void add_samples(Wave* wave, const int16_t* sample_array){
     char* sample_byte_array;
 
     uint32_t data_index = 0;
-    uint16_t sample;
+    int16_t sample;
 
     // For each sample
     for(size_t i = 0; i < wave->numberof_samples; i++){
-        // Shift the sample to fit range 0-UINT16_MAX
         sample = sample_array[i]; 
         
         // Convert to little endian
-        sample_byte_array = (char*) little_endian(&sample, sizeof(sample));//&sample_array[i];
+        sample_byte_array = (char*) little_endian(&sample, sizeof(sample));
 
         // For each channel
         for(size_t j = 0; j < wave->header.numberof_channels; j++){
@@ -60,7 +59,7 @@ Wave make_wave(const int16_t* sample_array, uint16_t numberof_channels, uint32_t
     if(wave.data){
         add_samples(&wave, sample_array);
     } else {
-        printf("Error allocating memory for sample data.\n");
+        printf("Wave data malloc() error.\n");
     }
 
     return wave;
@@ -68,11 +67,11 @@ Wave make_wave(const int16_t* sample_array, uint16_t numberof_channels, uint32_t
 
 void print_metadata(Wave* wave){
     printf("[\n");
+
     printf("    {\n");
     printf("        chunkId: \'%.4s\',\n", wave->header.chunk_id);
     printf("        chunkSize: %i,\n", wave->header.chunk_size);
     printf("        format: \'%.4s\',\n", wave->header.format);
-
     printf("        formatSubchunkId: \'%.4s\',\n", wave->header.format_subchunk_id);
     printf("        formatSubchunkSize: %i,\n", wave->header.format_subchunk_size);
     printf("        audioFormat: %i,\n", wave->header.audio_format);
@@ -81,7 +80,6 @@ void print_metadata(Wave* wave){
     printf("        byteRate: %i,\n", wave->header.byte_rate);
     printf("        blockAlign: %i,\n", wave->header.block_align);
     printf("        bitsPerSample: %i,\n", wave->header.bits_per_sample);
-
     printf("        dataSubchunkId: \'%.4s\',\n", wave->header.data_subchunk_id);
     printf("        dataSubchunkSize: %i\n", wave->header.data_subchunk_size);
     printf("    },\n");
@@ -90,5 +88,6 @@ void print_metadata(Wave* wave){
     printf("        dataSize: %i,\n", wave->data_size);
     printf("        nSamples: %i,\n", wave->numberof_samples);
     printf("    }\n");
+
     printf("]\n");
 }
