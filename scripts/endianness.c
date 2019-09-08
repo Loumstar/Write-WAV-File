@@ -1,4 +1,3 @@
-
 #include "endianness.h"
 
 bool is_big_endian(){

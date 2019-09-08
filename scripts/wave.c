@@ -22,16 +22,21 @@ void remove_sample_data(Wave* wave){
     wave->data_size = 0;
 }
 
-void add_samples(Wave* wave, const int16_t* sample_array){
+void add_samples(Wave* wave, const int32_t* sample_array){
     char* sample_byte_array;
 
     uint32_t data_index = 0;
-    int16_t sample;
+    int32_t sample;
 
     // For each sample
     for(size_t i = 0; i < wave->numberof_samples; i++){
-        sample = sample_array[i]; 
         
+        if(wave->header.bits_per_sample == 8){
+            sample = sample_array[i] + INT8_MAX;
+        } else {
+            sample = sample_array[i];
+        }
+
         // Convert to little endian
         sample_byte_array = (char*) little_endian(&sample, sizeof(sample));
 
@@ -46,7 +51,7 @@ void add_samples(Wave* wave, const int16_t* sample_array){
     }
 }
 
-Wave make_wave(const int16_t* sample_array, uint32_t numberof_samples, uint16_t numberof_channels, uint32_t sample_rate, uint16_t bits_per_sample){
+Wave make_wave(const int32_t* sample_array, uint32_t numberof_samples, uint16_t numberof_channels, uint32_t sample_rate, uint16_t bits_per_sample){
     Wave wave;
 
     wave.header = make_header(sample_rate, numberof_channels, bits_per_sample);
