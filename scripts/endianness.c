@@ -2,7 +2,7 @@
 #include "endianness.h"
 
 bool is_big_endian(){
-    uint16_t test = 1;
+    unsigned int test = 1;
     char *p = (char*) &test;
     return !p[0];
 }

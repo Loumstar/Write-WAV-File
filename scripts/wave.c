@@ -11,15 +11,14 @@ void allocate_sample_data(Wave* wave, uint32_t numberof_samples){
     // Allocate this amount to wave.data.
     wave->data = malloc(wave->data_size);
 
-    if(!(wave->data)){
-        wave->data_size = 0;
-    }
+    // If malloc() fails, reset data size to zero
+    if(!(wave->data)) wave->data_size = 0;
 }
 
 void remove_sample_data(Wave* wave){
     // Deallocate the memory
     free(wave->data);
-    // Reset the data size of the wave to zero.
+    // Reset data size to zero.
     wave->data_size = 0;
 }
 
@@ -47,7 +46,7 @@ void add_samples(Wave* wave, const int16_t* sample_array){
     }
 }
 
-Wave make_wave(const int16_t* sample_array, uint16_t numberof_channels, uint32_t numberof_samples, uint32_t sample_rate, uint16_t bits_per_sample){
+Wave make_wave(const int16_t* sample_array, uint32_t numberof_samples, uint16_t numberof_channels, uint32_t sample_rate, uint16_t bits_per_sample){
     Wave wave;
 
     wave.header = make_header(sample_rate, numberof_channels, bits_per_sample);

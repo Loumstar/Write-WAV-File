@@ -40,3 +40,9 @@ void write_wave(Wave* wave, const char* filename){
     
     system_endianness(&(wave->header.data_subchunk_size), 'l', sizeof(uint32_t));
 }
+
+void write_array_to_wav_file(const char* filename, const int16_t* sample_array, uint32_t sample_array_size, uint16_t numberof_channels, uint32_t sample_rate, uint16_t bits_per_sample){
+    Wave wave = make_wave(sample_array, sample_array_size, numberof_channels, sample_rate, bits_per_sample);
+
+    write_wave(&wave, filename);
+}

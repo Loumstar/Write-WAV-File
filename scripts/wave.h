@@ -2,6 +2,7 @@
     #define WAVE_H
 
     #include <stdlib.h>
+    #include <stdint.h>
     #include <stdio.h>
     #include <math.h>
 
@@ -27,7 +28,7 @@
     } Wave;
 
     // Method to return a Wave instance that is ready to be written to a wav file. For simplicity it has only one channel.
-    Wave make_wave(const int16_t* sample_array, uint16_t numberof_channels, uint32_t numberof_samples, uint32_t sample_rate, uint16_t bits_per_sample);
+    Wave make_wave(const int16_t* sample_array, uint32_t numberof_samples, uint16_t numberof_channels, uint32_t sample_rate, uint16_t bits_per_sample);
 
     // Method to deallocate the memory used to hold the sample in data while the file is written to the wav file.
     void remove_sample_data(Wave* wave);
