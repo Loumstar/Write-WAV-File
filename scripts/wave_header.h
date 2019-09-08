@@ -3,6 +3,11 @@
 
     #include <stdint.h>
 
+    /*
+    WaveHeader is a struct that contains all the fields that must be part of the
+    metadata for a wav file.
+    These are declared in the order they must be arranged, with the appropriate sizes.
+    */
     typedef struct WaveHeader {
         
         // Riff Wave Header
@@ -33,6 +38,7 @@
 
     } WaveHeader;
 
+    //Creates a WaveHeader instance and defines each field.
     WaveHeader make_header(uint32_t sample_rate, uint16_t numberof_channels, uint16_t bits_per_sample);
 
 #endif

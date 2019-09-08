@@ -1,14 +1,14 @@
+
 #include "endianness.h"
 
 bool is_big_endian(){
     uint16_t test = 1;
     char *p = (char*) &test;
-
-    return (bool) ~p[0];
+    return !p[0];
 }
 
 void reverse_endianness(void* value, size_t value_size){
-    char result[32];
+    char result[16];
 
     for(size_t i = 0; i < value_size; i++){
         result[i] = ((char*)value)[value_size - i - 1];
@@ -18,10 +18,12 @@ void reverse_endianness(void* value, size_t value_size){
     }
 }
 
-void big_endian(void* value, size_t value_size){
+void* big_endian(void* value, size_t value_size){
     if(!is_big_endian()) reverse_endianness(value, value_size);
+    return value;
 }
 
-void little_endian(void* value, size_t value_size){
+void* little_endian(void* value, size_t value_size){
     if(is_big_endian()) reverse_endianness(value, value_size);
+    return value;
 }

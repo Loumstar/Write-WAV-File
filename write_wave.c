@@ -1,7 +1,7 @@
 #include "write_wave.h"
 
 void write_wave(Wave* wave, const char* filename){
-    // First make sure all numbers are little endian
+    // Convert values to little endian.
     little_endian(&(wave->header.chunk_size), sizeof(uint32_t));
     little_endian(&(wave->header.format_subchunk_size), sizeof(uint32_t));
     
@@ -16,6 +16,7 @@ void write_wave(Wave* wave, const char* filename){
 
     little_endian(&(wave->header.data_subchunk_size), sizeof(uint32_t));
 
+    // Write file
     FILE *file;
     file = fopen(filename, "wb");
 
@@ -24,7 +25,7 @@ void write_wave(Wave* wave, const char* filename){
     
     fclose(file);
 
-    // Convert back to system endian-ness
+    // Convert back to system endianness
     big_endian(&(wave->header.chunk_size), sizeof(uint32_t));
     big_endian(&(wave->header.format_subchunk_size), sizeof(uint32_t));
 
