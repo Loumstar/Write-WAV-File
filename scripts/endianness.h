@@ -13,4 +13,10 @@
     // Rearranges a value's byte array so that the first bit is the MSB
     void* little_endian(void* value, size_t value_size);
 
+    /*
+    Converts a values endianness back to the system endianness.
+    current_endianness must be 'l' for little or 'b' for big.
+    */
+    void* system_endianness(void* value, char current_endianness, size_t value_size);
+
 #endif

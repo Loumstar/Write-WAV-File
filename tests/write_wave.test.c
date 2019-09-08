@@ -23,10 +23,16 @@ int main(void){
     uint32_t sample_array_size = length * sample_rate;
 
     double test_freq[3][2] = {
-        {440.00, pow(2, 14)},
-        {659.26, pow(2, 14)},
+        {440.00, pow(2, 13)},
+        {659.26, pow(2, 13)},
         {554.36, pow(2, 12)}
     };
+
+    uint32_t max_amplitude = test_freq[0][1] + test_freq[1][1] + test_freq[2][1];
+    if(max_amplitude > INT16_MAX){
+        printf("Buffer Overflow error. Exiting.\n");
+        return 1;
+    }
 
     int16_t* sample_array = malloc(sizeof(int16_t) * sample_array_size);
 
@@ -34,7 +40,7 @@ int main(void){
         create_signal(sample_array, test_freq, sample_array_size, sample_rate);
         test_wave = make_wave(sample_array, 2, sample_array_size, sample_rate, sizeof(int16_t)*8);
     } else {
-        printf("Sample Array malloc() error. Exiting\n");
+        printf("Sample Array malloc() error. Exiting.\n");
         return 1;
     }
 
@@ -47,7 +53,7 @@ int main(void){
         remove_sample_data(&test_wave);
         free(sample_array);
     } else {
-        printf("Test wave data malloc() error. Exiting\n");
+        printf("Test wave data malloc() error. Exiting.\n");
         free(sample_array);
         return 1;
     }

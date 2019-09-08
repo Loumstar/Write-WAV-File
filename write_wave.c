@@ -26,17 +26,17 @@ void write_wave(Wave* wave, const char* filename){
     fclose(file);
 
     // Convert back to system endianness
-    big_endian(&(wave->header.chunk_size), sizeof(uint32_t));
-    big_endian(&(wave->header.format_subchunk_size), sizeof(uint32_t));
+    system_endianness(&(wave->header.chunk_size), 'l', sizeof(uint32_t));
+    system_endianness(&(wave->header.format_subchunk_size), 'l', sizeof(uint32_t));
 
-    big_endian(&(wave->header.audio_format), sizeof(uint16_t));
-    big_endian(&(wave->header.numberof_channels), sizeof(uint16_t));
+    system_endianness(&(wave->header.audio_format), 'l', sizeof(uint16_t));
+    system_endianness(&(wave->header.numberof_channels), 'l', sizeof(uint16_t));
 
-    big_endian(&(wave->header.sample_rate), sizeof(uint32_t));
-    big_endian(&(wave->header.byte_rate), sizeof(uint32_t));
+    system_endianness(&(wave->header.sample_rate), 'l', sizeof(uint32_t));
+    system_endianness(&(wave->header.byte_rate), 'l', sizeof(uint32_t));
 
-    big_endian(&(wave->header.block_align), sizeof(uint16_t));
-    big_endian(&(wave->header.bits_per_sample), sizeof(uint16_t));
+    system_endianness(&(wave->header.block_align), 'l', sizeof(uint16_t));
+    system_endianness(&(wave->header.bits_per_sample), 'l', sizeof(uint16_t));
     
-    big_endian(&(wave->header.data_subchunk_size), sizeof(uint32_t));
+    system_endianness(&(wave->header.data_subchunk_size), 'l', sizeof(uint32_t));
 }
