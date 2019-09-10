@@ -2,24 +2,24 @@
 
 void allocate_sample_data(Wave* wave, uint32_t numberof_samples){
     // Determine how many bytes the sample data will take up.
-    wave->data_size = wave->numberof_samples * wave->bytes_per_sample * wave->header.numberof_channels;
-
-    // Add this to the chunk_size and data_subchunk_size.
-    wave->header.chunk_size += wave->data_size;
-    wave->header.data_subchunk_size += wave->data_size;
+    int32_t data_size = wave->numberof_samples * wave->bytes_per_sample * wave->header.numberof_channels;
 
     // Allocate this amount to wave.data.
-    wave->data = malloc(wave->data_size);
+    wave->data = malloc(data_size);
 
-    // If malloc() fails, reset data size to zero
-    if(!(wave->data)) wave->data_size = 0;
+    // If malloc() does not fail, set chunk sizes
+    if(wave->data){
+        wave->header.chunk_size += data_size;
+        wave->header.data_subchunk_size += data_size;
+    }
 }
 
 void remove_sample_data(Wave* wave){
     // Deallocate the memory
     free(wave->data);
-    // Reset data size to zero.
-    wave->data_size = 0;
+    // Reset chunk sizes back to zero.
+    wave->header.chunk_size -= wave->header.data_subchunk_size;
+    wave->header.data_subchunk_size = 0;
 }
 
 void add_samples(Wave* wave, const int32_t* sample_array){
@@ -55,6 +55,7 @@ Wave make_wave(const int32_t* sample_array, uint32_t numberof_samples, uint16_t 
     Wave wave;
 
     wave.header = make_header(sample_rate, numberof_channels, bits_per_sample);
+
     wave.numberof_samples = numberof_samples;
     wave.bytes_per_sample = bits_per_sample / 8;
 
@@ -69,7 +70,18 @@ Wave make_wave(const int32_t* sample_array, uint32_t numberof_samples, uint16_t 
     return wave;
 }
 
-void print_metadata(Wave* wave){
+Wave make_blank_wave(){
+    Wave wave;
+
+    wave.header = make_blank_header();
+
+    wave.numberof_samples = 0;
+    wave.bytes_per_sample = 0;
+
+    return wave;
+}
+
+void print_metadata(const Wave* wave){
     printf("[\n");
 
     printf("    {\n");
@@ -89,8 +101,8 @@ void print_metadata(Wave* wave){
     printf("    },\n");
 
     printf("    {\n");
-    printf("        dataSize: %i,\n", wave->data_size);
-    printf("        nSamples: %i,\n", wave->numberof_samples);
+    printf("        bytesPerSample: %i,\n", wave->bytes_per_sample);
+    printf("        nSamples: %i,\n\n", wave->numberof_samples);
     printf("    }\n");
 
     printf("]\n");

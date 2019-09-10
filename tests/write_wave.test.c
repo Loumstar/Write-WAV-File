@@ -20,7 +20,7 @@ int main(void){
     float length = 10.0;
 
     uint32_t sample_rate = 44100;
-    uint16_t bits_per_sample = 32;
+    uint16_t bits_per_sample = 16;
     uint16_t numberof_channels = 2;
 
     uint32_t sample_array_size = length * sample_rate;
@@ -52,7 +52,7 @@ int main(void){
 
     if(wave.data){
         print_metadata(&wave);
-        printf("\nWriting %s.\n", filename);
+        printf("Writing %s.\n", filename);
 
         write_wave(&wave, filename);
 

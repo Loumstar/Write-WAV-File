@@ -4,6 +4,8 @@
     #include <stdbool.h>
     #include <stdlib.h>
 
+    // Note size_t size is in bytes.
+
     // Checks whether the computer system runs in big or small endian.
     bool is_big_endian();
 

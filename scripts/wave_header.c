@@ -54,3 +54,23 @@ WaveHeader make_header(uint32_t sample_rate, uint16_t numberof_channels, uint16_
 
     return header;
 }
+
+WaveHeader make_blank_header(){
+    WaveHeader header;
+
+    header.format_subchunk_size = 16;
+
+    header.audio_format = 1;
+    header.numberof_channels = 0;
+    header.sample_rate = 0;
+    header.bits_per_sample = 0;
+    
+    header.byte_rate = header.sample_rate * (header.bits_per_sample / 8) * header.numberof_channels;
+    header.block_align = (header.bits_per_sample / 8) * header.numberof_channels;
+
+    header.data_subchunk_size = 0;
+
+    header.chunk_size = 4 + (8 + header.format_subchunk_size) + (8 + header.data_subchunk_size);
+
+    return header;
+}
