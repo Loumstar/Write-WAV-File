@@ -31,6 +31,7 @@ void add_samples(Wave* wave, const int32_t* sample_array){
     // For each sample
     for(size_t i = 0; i < wave->numberof_samples; i++){
         
+        // 8-bit audio is unsigned while 16- and 32-bit is signed
         if(wave->header.bits_per_sample == 8){
             sample = sample_array[i] + INT8_MAX;
         } else {

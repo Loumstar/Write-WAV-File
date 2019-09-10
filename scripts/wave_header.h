@@ -8,6 +8,7 @@
     metadata for a wav file.
     These are declared in the order they must be arranged, with the appropriate sizes.
     */
+   
     typedef struct WaveHeader {
         
         // Riff Wave Header

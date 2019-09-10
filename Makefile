@@ -33,7 +33,7 @@ write_wave.o: write_wave.c
 .PHONY: clean, all
 
 clean:
-	rm -v $(BINARIES) *.o
+	rm -v $(BINARIES) *.o *.wav
 
 all:
 	make $(BINARIES)
