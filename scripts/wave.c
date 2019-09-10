@@ -17,6 +17,7 @@ void allocate_sample_data(Wave* wave, uint32_t numberof_samples){
 void remove_sample_data(Wave* wave){
     // Deallocate the memory
     free(wave->data);
+    
     // Reset chunk sizes back to zero.
     wave->header.chunk_size -= wave->header.data_subchunk_size;
     wave->header.data_subchunk_size = 0;
@@ -25,10 +26,9 @@ void remove_sample_data(Wave* wave){
 void add_samples(Wave* wave, const int32_t* sample_array){
     char* sample_byte_array;
 
-    uint32_t data_index = 0;
+    size_t data_index = 0;
     int32_t sample;
 
-    // For each sample
     for(size_t i = 0; i < wave->numberof_samples; i++){
         
         // 8-bit audio is unsigned while 16- and 32-bit is signed
@@ -56,17 +56,15 @@ Wave make_wave(const int32_t* sample_array, uint32_t numberof_samples, uint16_t 
     Wave wave;
 
     wave.header = make_header(sample_rate, numberof_channels, bits_per_sample);
-
     wave.numberof_samples = numberof_samples;
     wave.bytes_per_sample = bits_per_sample / 8;
 
+    // Allocate memory so the Wave instance can hold the samples
     allocate_sample_data(&wave, numberof_samples);
 
-    if(wave.data){
-        add_samples(&wave, sample_array);
-    } else {
-        printf("Wave data malloc() error.\n");
-    }
+    // If malloc() is successful, add the samples.
+    if(wave.data) add_samples(&wave, sample_array);
+    else printf("Wave data malloc() error.\n");
 
     return wave;
 }
@@ -75,7 +73,6 @@ Wave make_blank_wave(){
     Wave wave;
 
     wave.header = make_blank_header();
-
     wave.numberof_samples = 0;
     wave.bytes_per_sample = 0;
 

@@ -18,6 +18,6 @@
     Wave read_wave(char* filename);
 
     // Method to return an array of the waveform read from a wav file.
-    void wave_data_to_array(int32_t* sample_array, Wave* wave);
+    void write_wave_data_to_array(int32_t* sample_array, Wave* wave);
 
 #endif

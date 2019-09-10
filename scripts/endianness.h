@@ -4,9 +4,9 @@
     #include <stdbool.h>
     #include <stdlib.h>
 
-    // Note size_t size is in bytes.
+    //Note size_t size in each method is measured in bytes.
 
-    // Checks whether the computer system runs in big or small endian.
+    // Checks whether the computer system is in big or small endian.
     bool is_big_endian();
 
     // Rearranges a value's byte array so that the first bit is the LSB
@@ -19,6 +19,7 @@
     Converts a values endianness back to the system endianness.
     current_endianness must be 'l' for little or 'b' for big.
     */
+
     void* system_endianness(void* value, char current_endianness, size_t value_size);
 
 #endif

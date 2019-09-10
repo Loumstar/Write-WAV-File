@@ -16,6 +16,7 @@
     Only the header and data are written to the file, however the other fields are
     useful for writing the sample into the data field.
     */
+
     typedef struct Wave {
 
         WaveHeader header;
@@ -30,6 +31,7 @@
     // Method to return a Wave instance that is ready to be written to a wav file.
     Wave make_wave(const int32_t* sample_array, uint32_t numberof_samples, uint16_t numberof_channels, uint32_t sample_rate, uint16_t bits_per_sample);
 
+    // Method to return an empty wave. All values except for the format_subchunk_size and audio_format fields are set to zero.
     Wave make_blank_wave();
 
     // Method to deallocate the memory used to hold the sample in data while the file is written to the wav file.

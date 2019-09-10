@@ -1,17 +1,21 @@
 #include "endianness.h"
 
 bool is_big_endian(){
-    unsigned int test = 1;
+    // Creates 00 01 in big endian
+    unsigned short int test = 1;
+    // Create a pointer to an array of these two bytes
     char *p = (char*) &test;
+    // Returns true if first byte in array is 00
     return !p[0];
 }
 
 void reverse_endianness(void* value, size_t value_size){
-    char result[16];
-
+    char result[4];
+    // Places the bytes of the value in reverse order into result
     for(size_t i = 0; i < value_size; i++){
         result[i] = ((char*)value)[value_size - i - 1];
     }
+    // Copies the bytes of result back into the value
     for(size_t i = 0; i < value_size; i++){
         ((char*)value)[i] = result[i];
     }

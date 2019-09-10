@@ -42,6 +42,7 @@
     // Creates a WaveHeader instance and defines each field.
     WaveHeader make_header(uint32_t sample_rate, uint16_t numberof_channels, uint16_t bits_per_sample);
 
+    // Method to return an empty WaveHeader. All values except for the format_subchunk_size and audio_format fields are set to zero.
     WaveHeader make_blank_header();
 
 #endif

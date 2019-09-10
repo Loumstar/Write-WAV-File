@@ -64,13 +64,11 @@ WaveHeader make_blank_header(){
     header.numberof_channels = 0;
     header.sample_rate = 0;
     header.bits_per_sample = 0;
-    
-    header.byte_rate = header.sample_rate * (header.bits_per_sample / 8) * header.numberof_channels;
-    header.block_align = (header.bits_per_sample / 8) * header.numberof_channels;
-
+    header.byte_rate = 0;
+    header.block_align = 0;
     header.data_subchunk_size = 0;
 
-    header.chunk_size = 4 + (8 + header.format_subchunk_size) + (8 + header.data_subchunk_size);
+    header.chunk_size = 20 + header.format_subchunk_size;
 
     return header;
 }

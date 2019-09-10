@@ -21,7 +21,7 @@ int main(void){
 
     int32_t* sample_array = malloc(sizeof(int32_t) * sample_array_size * numberof_channels);
 
-    wave_data_to_array(sample_array, &test_wave);
+    write_wave_data_to_array(sample_array, &test_wave);
 
     if(test_wave.data) remove_sample_data(&test_wave);
 
