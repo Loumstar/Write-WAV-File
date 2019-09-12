@@ -17,7 +17,7 @@ void allocate_sample_data(Wave* wave, uint32_t numberof_samples){
 void remove_sample_data(Wave* wave){
     // Deallocate the memory
     free(wave->data);
-    
+
     // Reset chunk sizes back to zero.
     wave->header.chunk_size -= wave->header.data_subchunk_size;
     wave->header.data_subchunk_size = 0;
@@ -73,8 +73,11 @@ Wave make_blank_wave(){
     Wave wave;
 
     wave.header = make_blank_header();
+    
     wave.numberof_samples = 0;
     wave.bytes_per_sample = 0;
+
+    wave.data = NULL;
 
     return wave;
 }
