@@ -72,3 +72,35 @@ WaveHeader make_blank_header(){
 
     return header;
 }
+
+void make_wave_header_little_endian(WaveHeader* header){
+    little_endian(&(header->chunk_size), sizeof(uint32_t));
+    little_endian(&(header->format_subchunk_size), sizeof(uint32_t));
+    
+    little_endian(&(header->audio_format), sizeof(uint16_t));
+    little_endian(&(header->numberof_channels), sizeof(uint16_t));
+
+    little_endian(&(header->sample_rate), sizeof(uint32_t));
+    little_endian(&(header->byte_rate), sizeof(uint32_t));
+
+    little_endian(&(header->block_align), sizeof(uint16_t));
+    little_endian(&(header->bits_per_sample), sizeof(uint16_t));
+
+    little_endian(&(header->data_subchunk_size), sizeof(uint32_t));
+}
+
+void make_wave_header_system_endian(WaveHeader* header, char current_endianness){
+    system_endian(&(header->chunk_size), current_endianness, sizeof(uint32_t));
+    system_endian(&(header->format_subchunk_size), current_endianness, sizeof(uint32_t));
+
+    system_endian(&(header->audio_format), current_endianness, sizeof(uint16_t));
+    system_endian(&(header->numberof_channels), current_endianness, sizeof(uint16_t));
+
+    system_endian(&(header->sample_rate), current_endianness, sizeof(uint32_t));
+    system_endian(&(header->byte_rate), current_endianness, sizeof(uint32_t));
+
+    system_endian(&(header->block_align), current_endianness, sizeof(uint16_t));
+    system_endian(&(header->bits_per_sample), current_endianness, sizeof(uint16_t));
+    
+    system_endian(&(header->data_subchunk_size), current_endianness, sizeof(uint32_t));
+}

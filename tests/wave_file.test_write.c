@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "write_wave.h"
 #include "wave.h"
+#include "wave_file.h"
 
 void create_signal(int32_t sample_array[], const double freqs[3][2], uint32_t sample_array_size, uint32_t sample_rate){
     for(size_t i = 0; i < sample_array_size; i++){
@@ -54,7 +54,7 @@ int main(void){
         print_metadata(&wave);
         printf("Writing %s.\n", filename);
 
-        write_wave(&wave, filename);
+        write_wave(filename, &wave);
 
         remove_sample_data(&wave);
         free(sample_array);

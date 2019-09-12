@@ -79,6 +79,29 @@ Wave make_blank_wave(){
     return wave;
 }
 
+void read_wave_data_to_array(Wave* wave, int32_t* sample_array){
+    size_t wave_data_index = 0;
+    size_t sample_index = 0;
+
+    char* sample_byte_array;
+
+    while(wave_data_index < wave->header.data_subchunk_size){
+        // Create a pointer to the sample location in sample_array so each byte can be manipulated individually
+        sample_byte_array = (char*) &sample_array[sample_index];
+        // As the return is only the first channel, skip all other channels by moving the wave data index forward
+        wave_data_index = sample_index * wave->bytes_per_sample * wave->header.numberof_channels;
+
+        for(size_t i = 0; i < wave->bytes_per_sample; i++){
+            // Set, byte-by-byte, the value of the sample in sample_array by reading it straight from the wave data.
+            sample_byte_array[i] = (wave->data)[wave_data_index + i];
+        }
+        // Convert to the system endianness
+        system_endian(&sample_array[sample_index], 'l', 4);
+        // Move to the next sample
+        sample_index++;
+    }
+}
+
 void print_metadata(const Wave* wave){
     printf("[\n");
 

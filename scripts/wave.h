@@ -37,6 +37,9 @@
     // Method to deallocate the memory used to hold the sample in data while the file is written to the wav file.
     void remove_sample_data(Wave* wave);
 
+    // Method to return an array of the waveform read from a wav file.
+    void read_wave_data_to_array(Wave* wave, int32_t* sample_array);
+
     // Method to print all fields of the wave struct in a json format.
     void print_metadata(const Wave* wave);
 

@@ -31,7 +31,7 @@ void* little_endian(void* value, size_t value_size){
     return value;
 }
 
-void* system_endianness(void* value, char current_endianness, size_t value_size){
+void* system_endian(void* value, char current_endianness, size_t value_size){
     if((is_big_endian() && current_endianness == 'l') || (!is_big_endian() && current_endianness == 'b')){
         reverse_endianness(value, value_size);
     }

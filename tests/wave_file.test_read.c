@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "write_wave.h"
 #include "wave.h"
+#include "wave_file.h"
 
 int main(void){
 
@@ -21,7 +21,7 @@ int main(void){
 
     int32_t* sample_array = malloc(sizeof(int32_t) * sample_array_size * numberof_channels);
 
-    write_wave_data_to_array(sample_array, &test_wave);
+    read_wave_data_to_array(&test_wave, sample_array);
 
     if(test_wave.data) remove_sample_data(&test_wave);
 

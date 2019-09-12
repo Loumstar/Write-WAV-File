@@ -20,6 +20,6 @@
     current_endianness must be 'l' for little or 'b' for big.
     */
 
-    void* system_endianness(void* value, char current_endianness, size_t value_size);
+    void* system_endian(void* value, char current_endianness, size_t value_size);
 
 #endif

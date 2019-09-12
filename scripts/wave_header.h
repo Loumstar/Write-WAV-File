@@ -3,6 +3,8 @@
 
     #include <stdint.h>
 
+    #include "endianness.h"
+
     /*
     WaveHeader is a struct that contains all the fields that must be part of the
     metadata for a wav file.
@@ -44,5 +46,11 @@
 
     // Method to return an empty WaveHeader. All values except for the format_subchunk_size and audio_format fields are set to zero.
     WaveHeader make_blank_header();
+
+    // Method that ensures all fields of a wave instance are little endian.
+    void make_wave_header_little_endian(WaveHeader* header);
+
+    // Method that ensures all fields of a wave instance are the same as the system's endianness.
+    void make_wave_header_system_endian(WaveHeader* header, char current_endianness);
 
 #endif

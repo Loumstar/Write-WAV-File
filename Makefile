@@ -6,17 +6,17 @@ BINARIES = testReadWave testWriteWave
 INCLUDES = -I./ \
 		   -I./scripts/
 
-testReadWave: read_wave.test.o endianness.o wave_header.o wave.o write_wave.o
-	$(CC) $(CFLAGS) -o testReadWave read_wave.test.o endianness.o wave_header.o wave.o write_wave.o
+testReadWave: wave_file.test_read.o endianness.o wave_header.o wave.o wave_file.o
+	$(CC) $(CFLAGS) -o testReadWave wave_file.test_read.o endianness.o wave_header.o wave.o wave_file.o
 
-testWriteWave: write_wave.test.o endianness.o wave_header.o wave.o write_wave.o
-	$(CC) $(CFLAGS) -o testWriteWave write_wave.test.o endianness.o wave_header.o wave.o write_wave.o
+testWriteWave: wave_file.test_write.o endianness.o wave_header.o wave.o wave_file.o
+	$(CC) $(CFLAGS) -o testWriteWave wave_file.test_write.o endianness.o wave_header.o wave.o wave_file.o
 
-read_wave.test.o: tests/read_wave.test.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c tests/read_wave.test.c
+wave_file.test_read.o: tests/wave_file.test_read.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c tests/wave_file.test_read.c
 
-write_wave.test.o: tests/write_wave.test.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c tests/write_wave.test.c
+wave_file.test_write.o: tests/wave_file.test_write.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c tests/wave_file.test_write.c
 
 endianness.o: scripts/endianness.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c scripts/endianness.c
@@ -27,8 +27,8 @@ wave_header.o: scripts/wave_header.c
 wave.o: scripts/wave.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c scripts/wave.c
 
-write_wave.o: write_wave.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c write_wave.c
+wave_file.o: wave_file.c
+	$(CC) $(CFLAGS) $(INCLUDES) -c wave_file.c
 
 .PHONY: clean, all
 
