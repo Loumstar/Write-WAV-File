@@ -41,7 +41,7 @@ uint32_t get_file_size(FILE* fp){
     return file_size;
 }
 
-Wave read_wave(char* filename){
+Wave read_wave(const char* filename){
     Wave wave = make_blank_wave();
 
     FILE *fp;
