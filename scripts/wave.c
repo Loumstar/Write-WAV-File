@@ -10,7 +10,7 @@ void allocate_sample_data(Wave* wave, uint32_t numberof_samples){
     // If malloc() does not fail, set chunk sizes
     if(wave->data){
         wave->header.chunk_size += data_size;
-        wave->header.data_subchunk_size += data_size;
+        wave->header.data_subchunk_size = data_size;
     }
 }
 

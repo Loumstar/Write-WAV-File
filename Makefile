@@ -1,6 +1,7 @@
 CC = gcc
 CFLAGS = -pedantic -Wall
 
+OBJECTS = endianness.o wave_header.o wave.o wave_file.o
 BINARIES = testReadWave testWriteWave
 
 INCLUDES = -I./ \
@@ -30,10 +31,13 @@ wave.o: scripts/wave.c
 wave_file.o: wave_file.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c wave_file.c
 
-.PHONY: clean, all
+.PHONY: clean, objects, all
 
 clean:
 	rm -v $(BINARIES) *.o *.wav
+
+objects:
+	make $(OBJECTS)
 
 all:
 	make $(BINARIES)
