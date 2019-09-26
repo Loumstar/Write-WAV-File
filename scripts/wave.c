@@ -98,6 +98,17 @@ void read_wave_data_to_array(const Wave* wave, int32_t* sample_array){
         }
         // Convert to the system endianness
         system_endian(&sample_array[sample_index], 'l', 4);
+
+        /*
+        If there less than 4 bytes per sample, the sign bit will not be in the correct place for int32_t.
+        As a result, all negative values will be evaluated as their unsigned equiavlent.
+        Therefore subtract the maximum value the unsigned int equivalent can hold.
+        */
+       
+        if(sample_byte_array[wave->bytes_per_sample - 1] < 0){
+            sample_array[sample_index] -= pow(2, wave->header.bits_per_sample);
+        }
+
         
         // As the return is only the first channel, skip the samples from other channels by moving the data index forward
         wave_data_index += wave->bytes_per_sample * wave->header.numberof_channels;
