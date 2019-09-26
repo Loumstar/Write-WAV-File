@@ -23,10 +23,7 @@ int main(void){
 
     read_wave_data_to_array(&test_wave, sample_array);
 
-    if(test_wave.data){
-        //printf("%zu\n", test_wave.data);
-        remove_sample_data(&test_wave);
-    }
+    if(test_wave.data) remove_sample_data(&test_wave);
 
     if(sample_array){
         write_array_to_wav_file(write_filename, sample_array, sample_array_size, numberof_channels, sample_rate, bits_per_sample);

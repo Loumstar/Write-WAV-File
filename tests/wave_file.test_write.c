@@ -28,9 +28,9 @@ int main(void){
     char filename[] = "a_major.wav";
 
     double freqs[3][2] = {
-        {440.00, pow(2, bits_per_sample - 3)},
-        {659.26, pow(2, bits_per_sample - 3)},
-        {554.36, pow(2, bits_per_sample - 3)}
+        {440.00, pow(2, bits_per_sample - 3)}, // A
+        {554.36, pow(2, bits_per_sample - 3)}  // C#
+        {659.26, pow(2, bits_per_sample - 3)}, // E
     };
 
     uint32_t max_amplitude = freqs[0][1] + freqs[1][1] + freqs[2][1];
