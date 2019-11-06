@@ -4,9 +4,9 @@
     #include <stdint.h>
     #include <string.h>
 
-    #include "wave_header.h"
-    #include "wave.h"
-    #include "endianness.h"
+    #include "scripts/wave_header.h"
+    #include "scripts/wave.h"
+    #include "scripts/endianness.h"
 
     // Method to write a Wave instance to a file.
     void write_wave(const char* filename, Wave* wave);

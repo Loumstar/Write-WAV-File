@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "wave.h"
-#include "wave_file.h"
+#include "../scripts/wave.h"
+#include "../wave_file.h"
 
 void create_signal(int32_t sample_array[], const double freqs[3][2], uint32_t sample_array_size, uint32_t sample_rate){
     for(size_t i = 0; i < sample_array_size; i++){
@@ -30,7 +30,7 @@ int main(void){
     double freqs[3][2] = {
         {440.00, pow(2, bits_per_sample - 3)}, // A
         {554.36, pow(2, bits_per_sample - 3)}, // C#
-        {659.26, pow(2, bits_per_sample - 3)}, // E
+        {659.26, pow(2, bits_per_sample - 3)}  // E
     };
 
     uint32_t max_amplitude = freqs[0][1] + freqs[1][1] + freqs[2][1];

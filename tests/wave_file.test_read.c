@@ -1,8 +1,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "wave.h"
-#include "wave_file.h"
+#include "../scripts/wave.h"
+#include "../wave_file.h"
 
 int main(void){
 
