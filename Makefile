@@ -4,8 +4,7 @@ CFLAGS = -pedantic -Wall
 OBJECTS = endianness.o wave_header.o wave.o wave_file.o
 BINARIES = testReadWave testWriteWave
 
-INCLUDES = -I./ \
-		   -I./scripts/
+INCLUDES = 
 
 testReadWave: wave_file.test_read.o endianness.o wave_header.o wave.o wave_file.o
 	$(CC) $(CFLAGS) -o testReadWave wave_file.test_read.o endianness.o wave_header.o wave.o wave_file.o
