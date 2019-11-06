@@ -29,7 +29,7 @@ int main(void){
 
     double freqs[3][2] = {
         {440.00, pow(2, bits_per_sample - 3)}, // A
-        {554.36, pow(2, bits_per_sample - 3)}  // C#
+        {554.36, pow(2, bits_per_sample - 3)}, // C#
         {659.26, pow(2, bits_per_sample - 3)}, // E
     };
 
