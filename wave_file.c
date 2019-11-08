@@ -17,16 +17,47 @@ void write_wave(const char* filename, Wave* wave){
     fclose(file);
 }
 
+bool check_match(char ch, const char* id_string, size_t i, size_t id_length, FILE* fp){
+    // If length of the string is reached, then match is successful
+    if(i == id_length){
+        return true;
+    // If all chars so far have matched, move to next one by invoking another check_match()
+    } else if(ch == id_string[i]){
+        ch = fgetc(fp);
+        return check_match(ch, id_string, i+1, id_length, fp);
+    // If the match fails, return false, stopping recursion.
+    } else {
+        return false;
+    }
+}
+
+long find_id(FILE* fp, const char* id_string, size_t id_length){
+    // Start from beginning of the file
+    fseek(fp, 0, SEEK_SET);
+    
+    bool is_match = false;
+    unsigned char ch;
+
+    for(size_t i = 1; !is_match && (int) ch != EOF; i++){
+        // get the byte
+        ch = (unsigned char) fgetc(fp);
+        // For each offset in the file, check for string
+        is_match = check_match(ch, id_string, 0, id_length, fp);
+        // Return back to the original offset to continue for() loop
+        fseek(fp, i, SEEK_SET);
+    }
+    // Return location of previous ch if found, else return -1
+    return is_match ? ftell(fp) - 1: -1;
+}
+
 void get_bytes_from_file(FILE* fp, size_t offset, void* target, size_t size){
-    char ch;
-
+    unsigned char ch;
     // Go to the location of the value, given as a byte offset from start of the file
-    fseek(fp, SEEK_SET, offset);
-
+    fseek(fp, offset, SEEK_SET);
     // Get value byte by byte and put it into an array while not EOF
     for(size_t i = 0; i < size; i++){
         ch = fgetc(fp);
-        if(ch != EOF) ((char*)target)[i] = ch;
+        if((int) ch != EOF) ((unsigned char*)target)[i] = ch;
     }
 }
 
@@ -71,7 +102,7 @@ Wave read_wave(const char* filename){
         // Format subchunk
         get_bytes_from_file(fp, 12, wave.header.format_subchunk_id, 4);
 
-        // Find the format subchunk id
+        // Check the format subchunk id
         if(strncmp("fmt ", wave.header.format_subchunk_id, 4)){
             printf("Format subchunk not found.\n");
         }
@@ -91,43 +122,48 @@ Wave read_wave(const char* filename){
 
         /*
         Data subchunk
-        Offset includes format_subchunk_size incase extra parameters were missed.
+        Find data subchunk id incase extra parameters were missed.
         */
 
-        get_bytes_from_file(fp, 20 + wave.header.format_subchunk_size, wave.header.data_subchunk_id, 4);
+       long data_subchunk_start = find_id(fp, "data", 4);
 
-        // Find the data subchunk id
-        if(strncmp("data", wave.header.data_subchunk_id, 4)){
-            printf("Data subchunk not found.\n");
-        }
+        get_bytes_from_file(fp, data_subchunk_start, wave.header.data_subchunk_id, 4);
 
-        get_bytes_from_file(fp, 24 + wave.header.format_subchunk_size, &wave.header.data_subchunk_size, 4);
+        // If id is not found, then do not read subchunk data size or data as these will be incorrect.
+        if(data_subchunk_start == -1) printf("Data subchunk not found.\n");
+        else {
+            
+            get_bytes_from_file(fp, data_subchunk_start + 4, &wave.header.data_subchunk_size, 4);
+
+            /*
+            Check subchunk sizes. 
+            
+            8 bytes accounts for the id and sizes for each subchunk. 
+            4 bytes is for the format id in the main chunk.
+            These are omitted in the calculation of the sizes when the wav file is created.
+            */
         
-        /*
-        Check subchunk sizes. 
+            if(wave.header.chunk_size != 4 + (8 + wave.header.format_subchunk_size) + (8 + wave.header.data_subchunk_size)){
+                printf("Format and Data subchunk sizes do not match.\n");
+                printf("    This is likely due to extra subchunks in the file.\n");
+                printf("    These will be ignored.\n");
+            }
+
+            wave.bytes_per_sample = wave.header.bits_per_sample / 8;
+
+            if(wave.bytes_per_sample && wave.header.numberof_channels){
+                wave.numberof_samples = wave.header.data_subchunk_size / (wave.bytes_per_sample * wave.header.numberof_channels);
+            }
+
+            // Convert all values back to the system endianness as wav files store values in little endian.
+            make_wave_header_system_endian(&(wave.header), 'l');
+
+            // Data
+            wave.data = malloc(wave.header.data_subchunk_size);
+            get_bytes_from_file(fp, data_subchunk_start + 8, wave.data, (size_t) wave.header.data_subchunk_size);
+
+        }
         
-        8 bytes accounts for the id and sizes for each subchunk. 
-        4 bytes is for the format id in the main chunk.
-        These are omitted in the calculation of the sizes when the wav file is created.
-        */
-    
-        if(wave.header.chunk_size != 4 + (8 + wave.header.format_subchunk_size) + (8 + wave.header.data_subchunk_size)){
-            printf("Format or Data subchunk incorrect size\n");
-        }
-
-        wave.bytes_per_sample = wave.header.bits_per_sample / 8;
-
-        if(wave.bytes_per_sample && wave.header.numberof_channels){
-            wave.numberof_samples = wave.header.data_subchunk_size / (wave.bytes_per_sample * wave.header.numberof_channels);
-        }
-
-        // Convert all values back to the system endianness as wav files store values in little endian.
-        make_wave_header_system_endian(&(wave.header), 'l');
-
-        // Data
-        wave.data = malloc(wave.header.data_subchunk_size);
-        get_bytes_from_file(fp, 24 + wave.header.format_subchunk_size, wave.data, (size_t) wave.header.data_subchunk_size);
-
         fclose(fp);
 
     }

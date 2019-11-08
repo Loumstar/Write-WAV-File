@@ -3,6 +3,7 @@
 
     #include <stdint.h>
     #include <string.h>
+    #include <stdbool.h>
 
     #include "scripts/wave_header.h"
     #include "scripts/wave.h"
