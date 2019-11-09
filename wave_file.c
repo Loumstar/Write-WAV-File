@@ -50,20 +50,20 @@ long find_id(FILE* fp, const char* id_string, size_t id_length){
     return is_match ? ftell(fp) - 1: -1;
 }
 
-void get_bytes_from_file(FILE* fp, size_t offset, void* target, size_t size){
-    unsigned char ch;
+void get_bytes_from_file(FILE* fp, long offset, void* target, size_t size){
+    int ch;
     // Go to the location of the value, given as a byte offset from start of the file
     fseek(fp, offset, SEEK_SET);
     // Get value byte by byte and put it into an array while not EOF
     for(size_t i = 0; i < size; i++){
         ch = fgetc(fp);
-        if((int) ch != EOF) ((unsigned char*)target)[i] = ch;
+        if(ch != EOF) ((unsigned char*) target)[i] = (unsigned char) ch;
     }
 }
 
-uint32_t get_file_size(FILE* fp){
-    int32_t initial_position = ftell(fp);
-    int32_t file_size;
+long get_file_size(FILE* fp){
+    long initial_position = ftell(fp);
+    long file_size;
 
     fseek(fp, 0, SEEK_END);
     file_size = ftell(fp);
@@ -130,8 +130,9 @@ Wave read_wave(const char* filename){
         get_bytes_from_file(fp, data_subchunk_start, wave.header.data_subchunk_id, 4);
 
         // If id is not found, then do not read subchunk data size or data as these will be incorrect.
-        if(data_subchunk_start == -1) printf("Data subchunk not found.\n");
-        else {
+        if(data_subchunk_start == -1){
+            printf("Data subchunk not found.\n");
+        } else {
             
             get_bytes_from_file(fp, data_subchunk_start + 4, &wave.header.data_subchunk_size, 4);
 

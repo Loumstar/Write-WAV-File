@@ -6,8 +6,8 @@
 
 int main(void){
 
-    char read_filename[] = "a_major.wav";
-    char write_filename[] = "a_major_copy.wav";
+    char read_filename[] = "03 Outlier.wav";
+    char write_filename[] = "03 Outlier_copy.wav";
 
     Wave test_wave = read_wave(read_filename);
 
@@ -26,6 +26,7 @@ int main(void){
     if(test_wave.data) remove_sample_data(&test_wave);
 
     if(sample_array){
+        printf("Writing %s.\n", write_filename);
         write_array_to_wav_file(write_filename, sample_array, sample_array_size, numberof_channels, sample_rate, bits_per_sample);
         free(sample_array);
     } else {
