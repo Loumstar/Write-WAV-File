@@ -1,15 +1,21 @@
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 #include "../scripts/wave.h"
 #include "../wave_file.h"
 
 int main(void){
+    size_t start, end;
 
-    char read_filename[] = "03 Outlier.wav";
-    char write_filename[] = "03 Outlier_copy.wav";
+    char read_filename[] = "a_major.wav";
+    char write_filename[] = "a_major_copy.wav";
 
-    Wave test_wave = read_wave(read_filename);
+    start = clock();
+    Wave test_wave = read_wave_metadata(read_filename);
+    end = clock();
+
+    printf("read_wave_metadata() took %.3f ms\n", ((double) end - start) / CLOCKS_PER_SEC);
 
     printf("Data obtained from wav file:\n");
     print_metadata(&test_wave);
@@ -21,16 +27,21 @@ int main(void){
 
     int32_t* sample_array = malloc(sizeof(int32_t) * sample_array_size * numberof_channels);
 
-    read_wave_data_to_array(&test_wave, sample_array);
+    start = clock();
+    if(sample_array) read_wave_data_to_array(&test_wave, sample_array);
+    end = clock();
+
+    printf("Audio file length: %.3f s\n", (double) test_wave.numberof_samples / test_wave.header.sample_rate);
+    printf("read_wave_to_array() took %.3f ms\n", ((double) end - start) * 1000 / CLOCKS_PER_SEC);
 
     if(test_wave.data) remove_sample_data(&test_wave);
 
     if(sample_array){
-        printf("Writing %s.\n", write_filename);
+        printf("Writing %s\n", write_filename);
         write_array_to_wav_file(write_filename, sample_array, sample_array_size, numberof_channels, sample_rate, bits_per_sample);
         free(sample_array);
     } else {
-        printf("Sample array malloc() error.\n");
+        printf("Sample array malloc() error\n");
         return 1;
     }
 

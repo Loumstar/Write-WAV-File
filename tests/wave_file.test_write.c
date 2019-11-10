@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 #include "../scripts/wave.h"
 #include "../wave_file.h"
@@ -15,6 +16,8 @@ void create_signal(int32_t sample_array[], const double freqs[3][2], uint32_t sa
 }
 
 int main(void){
+    size_t start, end;
+
     Wave wave;
 
     float length = 10.0;
@@ -43,7 +46,12 @@ int main(void){
     int32_t* sample_array = malloc(sizeof(int32_t) * sample_array_size);
 
     if(sample_array){
+        start = clock();
         create_signal(sample_array, freqs, sample_array_size, sample_rate);
+        end = clock();
+
+        printf("Sample created in %.3f ms\n", ((double) end - start) / CLOCKS_PER_SEC);
+
         wave = make_wave(sample_array, sample_array_size, numberof_channels, sample_rate, bits_per_sample);
     } else {
         printf("Sample Array malloc() error. Exiting.\n");
@@ -51,10 +59,16 @@ int main(void){
     }
 
     if(wave.data){
+        printf("Metadata for the wave file:\n");
         print_metadata(&wave);
+        
         printf("Writing %s.\n", filename);
 
+        start = clock();
         write_wave(filename, &wave);
+        end = clock();
+
+        printf("Wave data written to file in %.3f ms\n", ((double) end - start) / CLOCKS_PER_SEC);
 
         remove_sample_data(&wave);
         free(sample_array);
