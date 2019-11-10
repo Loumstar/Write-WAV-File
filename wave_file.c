@@ -17,12 +17,12 @@ void write_wave(const char* filename, Wave* wave){
     fclose(file);
 }
 
-bool check_match(char ch, const char* id_string, size_t i, size_t id_length, FILE* fp){
+bool check_match(int ch, const char* id_string, size_t i, size_t id_length, FILE* fp){
     // If length of the string is reached, then match is successful
     if(i == id_length){
         return true;
     // If all chars so far have matched, move to next one by invoking another check_match()
-    } else if(ch == id_string[i]){
+    } else if((unsigned char) ch == id_string[i]){
         ch = fgetc(fp);
         return check_match(ch, id_string, i+1, id_length, fp);
     // If the match fails, return false, stopping recursion.
@@ -36,11 +36,11 @@ long find_id(FILE* fp, const char* id_string, size_t id_length){
     fseek(fp, 0, SEEK_SET);
     
     bool is_match = false;
-    unsigned char ch;
+    int ch;
 
-    for(size_t i = 1; !is_match && (int) ch != EOF; i++){
+    for(size_t i = 1; !is_match && ch != EOF; i++){
         // get the byte
-        ch = (unsigned char) fgetc(fp);
+        ch = fgetc(fp);
         // For each offset in the file, check for string
         is_match = check_match(ch, id_string, 0, id_length, fp);
         // Return back to the original offset to continue for() loop
@@ -72,7 +72,7 @@ long get_file_size(FILE* fp){
     return file_size;
 }
 
-Wave read_wave(const char* filename){
+Wave read_wave_metadata(const char* filename){
     Wave wave = make_blank_wave();
 
     FILE *fp;
