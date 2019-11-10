@@ -19,16 +19,11 @@ void write_wave(const char* filename, Wave* wave){
 
 bool check_match(int ch, const char* id_string, size_t i, size_t id_length, FILE* fp){
     // If length of the string is reached, then match is successful
-    if(i == id_length){
-        return true;
-    // If all chars so far have matched, move to next one by invoking another check_match()
-    } else if((unsigned char) ch == id_string[i]){
-        ch = fgetc(fp);
-        return check_match(ch, id_string, i+1, id_length, fp);
-    // If the match fails, return false, stopping recursion.
-    } else {
-        return false;
-    }
+    if(i == id_length) return true;
+    // If the match fails, return false, stopping recursion
+    else if((char) ch != id_string[i]) return false;
+    // Else f all chars so far have matched, move to next one by invoking another check_match().
+    else return check_match(fgetc(fp), id_string, i+1, id_length, fp);
 }
 
 long find_id(FILE* fp, const char* id_string, size_t id_length){
@@ -57,7 +52,7 @@ void get_bytes_from_file(FILE* fp, long offset, void* target, size_t size){
     // Get value byte by byte and put it into an array while not EOF
     for(size_t i = 0; i < size; i++){
         ch = fgetc(fp);
-        if(ch != EOF) ((unsigned char*) target)[i] = (unsigned char) ch;
+        if(ch != EOF) ((char*) target)[i] = (char) ch;
     }
 }
 
