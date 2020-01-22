@@ -13,5 +13,5 @@
 #Remove all object files
 *.o
 
-#REmove all .wav files
+#Remove all .wav files
 *.wav

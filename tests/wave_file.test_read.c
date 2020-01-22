@@ -2,7 +2,6 @@
 #include <math.h>
 #include <time.h>
 
-#include "../scripts/wave.h"
 #include "../wave_file.h"
 
 int main(void){
@@ -12,7 +11,7 @@ int main(void){
     char write_filename[] = "a_major_copy.wav";
 
     start = clock();
-    Wave test_wave = read_wave_metadata(read_filename);
+    wave test_wave = read_wav_file(read_filename);
     end = clock();
 
     printf("read_wave_metadata() took %.3f ms\n", ((double) end - start) / CLOCKS_PER_SEC);
@@ -28,13 +27,13 @@ int main(void){
     int32_t* sample_array = malloc(sizeof(int32_t) * sample_array_size * numberof_channels);
 
     start = clock();
-    if(sample_array) read_wave_data_to_array(&test_wave, sample_array);
+    if(sample_array) wave_data_to_array(&test_wave, sample_array);
     end = clock();
 
     printf("Audio file length: %.3f s\n", (double) test_wave.numberof_samples / test_wave.header.sample_rate);
     printf("read_wave_to_array() took %.3f ms\n", ((double) end - start) * 1000 / CLOCKS_PER_SEC);
 
-    if(test_wave.data) remove_sample_data(&test_wave);
+    if(wave_is_valid(&test_wave)) deallocate_samples(&test_wave);
 
     if(sample_array){
         printf("Writing %s\n", write_filename);

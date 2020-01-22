@@ -2,7 +2,6 @@
 #include <math.h>
 #include <time.h>
 
-#include "../scripts/wave.h"
 #include "../wave_file.h"
 
 void create_signal(int32_t sample_array[], const double freqs[3][2], uint32_t sample_array_size, uint32_t sample_rate){
@@ -18,12 +17,12 @@ void create_signal(int32_t sample_array[], const double freqs[3][2], uint32_t sa
 int main(void){
     size_t start, end;
 
-    Wave wave;
+    wave wave;
 
     float length = 10.0;
 
     uint32_t sample_rate = 44100;
-    uint16_t bits_per_sample = 16;
+    uint16_t bits_per_sample = 32;
     uint16_t numberof_channels = 2;
 
     uint32_t sample_array_size = length * sample_rate;
@@ -52,25 +51,25 @@ int main(void){
 
         printf("Sample created in %.3f ms\n", ((double) end - start) / CLOCKS_PER_SEC);
 
-        wave = make_wave(sample_array, sample_array_size, numberof_channels, sample_rate, bits_per_sample);
+        wave = create_wave(sample_array, sample_array_size, numberof_channels, sample_rate, bits_per_sample);
     } else {
         printf("Sample Array malloc() error. Exiting.\n");
         return 1;
     }
 
-    if(wave.data){
+    if(wave_is_valid(&wave)){
         printf("Metadata for the wave file:\n");
         print_metadata(&wave);
         
         printf("Writing %s.\n", filename);
 
         start = clock();
-        write_wave(filename, &wave);
+        write_wav_file(filename, &wave);
         end = clock();
 
         printf("Wave data written to file in %.3f ms\n", ((double) end - start) / CLOCKS_PER_SEC);
 
-        remove_sample_data(&wave);
+        deallocate_samples(&wave);
         free(sample_array);
     } else {
         printf("Test wave data malloc() error. Exiting.\n");
