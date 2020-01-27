@@ -78,11 +78,18 @@ void add_samples(wave* w, const int32_t* sample_array){
     // For each sample
     for(size_t i = 0; i < w->numberof_samples; i++){
         
-        // If 8-bit, make sample value unsigned
+        sample = sample_array[i];
+
+        /*
+        If 8-bit, make sample value unsigned
+
+        Else is non 32-bit, correct sign bit by adding 2 ** bits_per_sample to negative
+        displacements, which acts like a buffer underflow.
+        */
         if(w->bytes_per_sample == 1){
-            sample = sample_array[i] + 128;
-        } else {
-            sample = sample_array[i];
+            sample += 128;
+        } else if(w->bytes_per_sample != 4 && sample < 0){
+            sample += pow(256, w->bytes_per_sample);
         }
 
         // Convert to little endian
@@ -92,7 +99,7 @@ void add_samples(wave* w, const int32_t* sample_array){
         for(size_t j = 0; j < w->header.numberof_channels; j++){
             // Add byte-by-byte, the sample in little endian
             for(size_t k = 0; k < w->bytes_per_sample; k++){
-                (w->data)[data_index] = sample_byte_array[k];
+                w->data[data_index] = sample_byte_array[k];
                 data_index++;
             }
         }
@@ -398,28 +405,7 @@ wave read_wav_file(const char* filename){
 
     return w;
 }
-/*
-void correct_sign_bit_location(int32_t* sample, uint16_t bytes_per_sample){
-    
-    Method to correct the location of the sign bit when a bytes from an int of a
-    different size is copied to 32-bit sample byte array.
 
-    When a n-bit integer is negative, its sign bit will be the (n-1)th bit.
-    Therefore this needs to be always at the 31st bit of the sample byte array as it is a
-    32-bit integer.
-
-    Due to two's complement, the difference between the value evaluated in the 32-bit int
-    and the actual value from the n-bit int is always 2^(n-1).
-
-    Therefore, subtract 2^(n-1) from the value held in the 32-bit sample.
-    
-    char* sample_byte_array = (void*) sample;
-
-    if(sample_byte_array[bytes_per_sample - 1] < 0){
-        *sample -= pow(2, (8 * bytes_per_sample) - 1);
-    }
-}
-*/
 void wave_data_to_array(const wave* w, int32_t* sample_array){
     /*
     Method to read the data from a wave type and write them into a int32_t array samples
@@ -447,9 +433,16 @@ void wave_data_to_array(const wave* w, int32_t* sample_array){
         // Convert to the system endianness to allow for arithmetic on samples.
         system_endian(&sample_array[sample_index], 'l', 4);
 
-        //If 8-bit audio, the data is unsigned so subtract 128 from each sample.    
+        /*
+        If 8-bit audio, the data is unsigned so subtract 128 from each sample.
+
+        Else if not 32-bit audio, the sign bit will be in the wrong location and a buffer
+        underflow will occur when the oscillation has a negative displacment.
+        */  
         if(w->bytes_per_sample == 1){
             sample_array[sample_index] -= 128;
+        } else if(sample_array[sample_index] > pow(2, (8 * w->bytes_per_sample) - 1)){
+            sample_array[sample_index] -= pow(256, w->bytes_per_sample);
         }
     }
 }
